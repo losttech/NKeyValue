@@ -1,4 +1,4 @@
-﻿namespace LostTech.NKeyValue.Wrappers
+﻿namespace LostTech.Storage.Wrappers
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace LostTech.NKeyValue.Query
+﻿namespace LostTech.Storage.Query
 {
     using System;
     using System.Threading.Tasks;

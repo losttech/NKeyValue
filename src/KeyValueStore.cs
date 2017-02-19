@@ -1,8 +1,8 @@
-﻿namespace LostTech.NKeyValue
+﻿namespace LostTech.Storage
 {
     using System;
     using System.Collections.Generic;
-    using LostTech.NKeyValue.Wrappers;
+    using LostTech.Storage.Wrappers;
 
     public static class KeyValueStore
     {

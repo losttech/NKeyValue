@@ -1,4 +1,4 @@
-namespace LostTech.NKeyValue.InMemory
+namespace LostTech.Storage.InMemory
 {
     using System.Collections.Concurrent;
     using System.Collections.Generic;

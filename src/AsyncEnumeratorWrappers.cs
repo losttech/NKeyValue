@@ -1,8 +1,8 @@
-﻿namespace LostTech.NKeyValue
+﻿namespace LostTech.Storage
 {
     using System;
     using System.Collections.Generic;
-    using LostTech.NKeyValue.Query;
+    using LostTech.Storage.Query;
 
     public static class AsyncEnumeratorWrappers
     {

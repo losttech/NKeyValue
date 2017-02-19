@@ -1,4 +1,4 @@
-namespace LostTech.NKeyValue.InMemory
+namespace LostTech.Storage.InMemory
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

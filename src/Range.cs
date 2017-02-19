@@ -1,4 +1,4 @@
-﻿namespace LostTech.NKeyValue
+﻿namespace LostTech.Storage
 {
     public struct Range<T>
     {
