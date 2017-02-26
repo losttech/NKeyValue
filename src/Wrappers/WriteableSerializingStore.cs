@@ -20,6 +20,8 @@ namespace LostTech.Storage.Wrappers
             this.serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
+        public Task<bool?> Delete(TKey key) => this.backingStore.Delete(key);
+
         public Task Put(TKey key, TValue value)
         {
             this.serializedValue.Clear();

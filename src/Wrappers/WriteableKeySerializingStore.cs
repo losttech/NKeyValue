@@ -14,6 +14,12 @@
             this.store = store;
         }
 
+        public Task<bool?> Delete(TKey key)
+        {
+            var serializedKey = this.keySerializer(key);
+            return this.store.Delete(serializedKey);
+        }
+
         public Task Put(TKey key, TValue value)
         {
             var serializedKey = this.keySerializer(key);

@@ -17,7 +17,13 @@
             this.store = store;
         }
 
-        public Task<bool> Put(TKey key, TValue value, TVersion versionToUpdate)
+        public Task<bool> Delete(TKey key, TVersion versionToDelete)
+        {
+            var serializedKey = this.keySerializer(key);
+            return this.store.Delete(serializedKey, versionToDelete);
+        }
+
+        public Task<(bool, TVersion)> Put(TKey key, TValue value, TVersion versionToUpdate)
         {
             var serializedKey = this.keySerializer(key);
             return this.store.Put(serializedKey, value, versionToUpdate);

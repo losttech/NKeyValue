@@ -26,7 +26,18 @@
         /// <param name="value">New value for the key</param>
         /// <param name="versionToUpdate">Stored value must be of this version to be updated.
         /// If stored version is different, update is cancelled, and function returns <c>false</c></param>
-        Task<bool> Put(TKey key, TValue value, TVersion versionToUpdate);
+        Task<(bool, TVersion)> Put(TKey key, TValue value, TVersion versionToUpdate);
+        /// <summary>
+        /// Tries to delete value with the specified key.
+        /// Operation will be cancelled if <paramref name="versionToDelete"/> does not match currently stored version for the key.
+        /// Returns <c>true</c>, if value was deleted.
+        /// Returns <c>false</c>, if <paramref name="versionToDelete"/> does not match stored one.
+        /// If value did not exist originally, either <c>true</c> or <c>false can be returned</c>.
+        /// </summary>
+        /// <param name="key">The key to delete</param>
+        /// <param name="versionToDelete">Stored value must be of this version to be deledted.
+        /// If stored version is different, delete is cancelled, and function returns <c>false</c></param>
+        Task<bool> Delete(TKey key, TVersion versionToDelete);
     }
 
     public interface IConcurrentVersionedKeyValueStore<in TKey, TValue> : IConcurrentVersionedKeyValueStore<TKey, object, TValue>

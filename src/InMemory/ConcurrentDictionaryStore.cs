@@ -1,5 +1,6 @@
 namespace LostTech.Storage.InMemory
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace LostTech.Storage.InMemory
             return Task.CompletedTask;
         }
 
-        public Task<bool> Put(TKey key, TValue value, object version)
+        public Task<(bool, object)> Put(TKey key, TValue value, object version)
         {
             var oldEntry = new VersionedEntry<object, TValue> {Version = version};
             var entry = new VersionedEntry<object, TValue>
@@ -46,10 +47,26 @@ namespace LostTech.Storage.InMemory
                 Version = new object(),
                 Value = value,
             };
-            return Task.FromResult(
-                version == null
-                    ? this.store.TryAdd(key, entry)
-                    : this.store.TryUpdate(key, entry, oldEntry));
+            var updated = version == null
+                ? this.store.TryAdd(key, entry)
+                : this.store.TryUpdate(key, entry, oldEntry);
+            return Task.FromResult((updated, entry.Version));
         }
+
+        public Task<bool> Delete(TKey key, object versionToDelete)
+        {
+            bool hadKey = this.store.TryRemove(key, out var entry);
+            if (!hadKey)
+                return Task.FromResult(false);
+
+            if (entry.Version != versionToDelete) {
+                this.store.AddOrUpdate(key, entry, (_, __) => entry);
+                return Task.FromResult(false);
+            }
+            else {
+                return Task.FromResult(true);
+            }
+        }
+        public Task<bool?> Delete(TKey key) => Task.FromResult((bool?)this.store.TryRemove(key, out var _));
     }
 }

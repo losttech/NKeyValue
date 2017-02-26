@@ -18,7 +18,9 @@
             this.backingStore = backingStore;
         }
 
-        public Task<bool> Put(TKey key, TValue value, TVersion versionToUpdate)
+        public Task<bool> Delete(TKey key, TVersion versionToDelete) => this.backingStore.Delete(key, versionToDelete);
+
+        public Task<(bool, TVersion)> Put(TKey key, TValue value, TVersion versionToUpdate)
         {
             this.Serialize(value);
             return this.backingStore.Put(key, this.serializedValue, versionToUpdate);

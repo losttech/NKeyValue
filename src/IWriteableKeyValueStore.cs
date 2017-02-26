@@ -15,5 +15,10 @@
         /// <param name="key">The key to set value for</param>
         /// <param name="value">New value for the key</param>
         Task Put(TKey key, TValue value);
+        /// <summary>
+        /// Attempts to delete value with the specified key. If possible, returns if something was actually deleted.
+        /// </summary>
+        /// <param name="key">Key to remove</param>
+        Task<bool?> Delete(TKey key);
     }
 }

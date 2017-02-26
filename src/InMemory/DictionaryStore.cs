@@ -1,5 +1,6 @@
 namespace LostTech.Storage.InMemory
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -32,5 +33,7 @@ namespace LostTech.Storage.InMemory
             this.store[key] = value;
             return Task.CompletedTask;
         }
+
+        public Task<bool?> Delete(TKey key) => Task.FromResult((bool?)this.store.Remove(key));
     }
 }
