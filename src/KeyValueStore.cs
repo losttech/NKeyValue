@@ -62,5 +62,20 @@
             WithRowKeyAsPartitionKey<TStore, TKey, TVersion, TValue>(
                 this IConcurrentVersionedKeyValueStore<PartitionedKey<TKey, TKey>, TVersion, TValue> partitionedStore)
             => partitionedStore.WithKey((TKey key) => new PartitionedKey<TKey, TKey>(key, key));
+
+        public static IPartitionedKeyValueStore<TPartition, TRow, TValue>
+            WithKey<TPartition, TOldPartition, TRow, TOldRow, TValue>(
+                this IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue> store,
+                Func<TPartition, TOldPartition> partitionSerializer,
+                Func<TRow, TOldRow> rowSerializer,
+                Func<TOldPartition, TPartition> partitionDeserializer,
+                Func<TOldRow, TRow> rowDeserializer) =>
+            new PartitionedKeySerializingStore<TPartition, TOldPartition, TRow, TOldRow, TValue>(
+                store, partitionSerializer, rowSerializer, partitionDeserializer, rowDeserializer);
+        public static IPartitionedKeyValueStore<TPartition, TRow, TValue>
+            WithValue<TPartition, TRow, TValue, TOldValue>(
+                this IPartitionedKeyValueStore<TPartition, TRow, TOldValue> store,
+                Func<TOldValue, TValue> deserializer
+            ) => new PartitionedSerializingStore<TPartition,TRow,TValue,TOldValue>(store, deserializer);
     }
 }
