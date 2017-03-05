@@ -4,16 +4,17 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    class PartitionedKeySerializingStore<TPartition, TOldPartition, TRow, TOldRow, TValue>
-        : IPartitionedKeyValueStore<TPartition, TRow, TValue>
+    class PartitionedKeySerializingStore<TPartition, TOldPartition, TRow, TOldRow, TValue, TContinuation>
+        : IPartitionedKeyValueStore<TPartition, TRow, TValue, TContinuation>
+        where TContinuation: class
     {
-        readonly IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue> store;
+        readonly IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue, TContinuation> store;
         readonly Func<TPartition, TOldPartition> partitionSerializer;
         readonly Func<TRow, TOldRow> rowSerializer;
         readonly Func<TOldPartition, TPartition> partitionDeserializer;
         readonly Func<TOldRow, TRow> rowDeserializer;
 
-        public PartitionedKeySerializingStore(IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue> store,
+        public PartitionedKeySerializingStore(IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue, TContinuation> store,
                 Func<TPartition, TOldPartition> partitionSerializer,
                 Func<TRow, TOldRow> rowSerializer,
                 Func<TOldPartition, TPartition> partitionDeserializer,
@@ -28,9 +29,9 @@
 
         public int? PageSizeLimit => this.store.PageSizeLimit;
 
-        public async Task<PagedQueryResult<KeyValuePair<PartitionedKey<TPartition, TRow>, TValue>>> Query(
+        public async Task<PagedQueryResult<KeyValuePair<PartitionedKey<TPartition, TRow>, TValue>, TContinuation>> Query(
             Range<TPartition> partitionRange, Range<TRow> rowRange,
-            int? pageSize = default(int?), object continuationToken = null)
+            int? pageSize = default(int?), TContinuation continuationToken = null)
         {
             var oldPartitionRange = partitionRange.Select(this.partitionSerializer);
             var oldRowRange = rowRange.Select(this.rowSerializer);

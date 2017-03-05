@@ -17,4 +17,9 @@
             ? throw new ArgumentNullException(nameof(selector))
             : new Range<TNew>(start: selector(this.Start), end: selector(this.End));
     }
+
+    public static class Range
+    {
+        public static Range<T> SingleElement<T>(T value) => new Range<T>(value, value);
+    }
 }

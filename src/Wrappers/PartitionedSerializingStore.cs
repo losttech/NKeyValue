@@ -4,12 +4,14 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    class PartitionedSerializingStore<TPartition, TRow, TValue, TOldValue> : IPartitionedKeyValueStore<TPartition, TRow, TValue>
+    class PartitionedSerializingStore<TPartition, TRow, TValue, TOldValue, TContinuation>
+        : IPartitionedKeyValueStore<TPartition, TRow, TValue, TContinuation>
+        where TContinuation: class
     {
-        readonly IPartitionedKeyValueStore<TPartition, TRow, TOldValue> store;
+        readonly IPartitionedKeyValueStore<TPartition, TRow, TOldValue, TContinuation> store;
         readonly Func<TOldValue, TValue> deserializer;
 
-        public PartitionedSerializingStore(IPartitionedKeyValueStore<TPartition, TRow, TOldValue> store,
+        public PartitionedSerializingStore(IPartitionedKeyValueStore<TPartition, TRow, TOldValue, TContinuation> store,
                                            Func<TOldValue, TValue> deserializer)
         {
             this.store = store ?? throw new ArgumentNullException(nameof(store));
@@ -18,9 +20,9 @@
 
         public int? PageSizeLimit => this.store.PageSizeLimit;
 
-        public async Task<PagedQueryResult<KeyValuePair<PartitionedKey<TPartition, TRow>, TValue>>> Query(
+        public async Task<PagedQueryResult<KeyValuePair<PartitionedKey<TPartition, TRow>, TValue>, TContinuation>> Query(
             Range<TPartition> partitionRange, Range<TRow> rowRange,
-            int? pageSize = default(int?), object continuationToken = null)
+            int? pageSize = default(int?), TContinuation continuationToken = null)
         {
             var page = await this.store.Query(partitionRange, rowRange, pageSize, continuationToken).ConfigureAwait(false);
             return page.Select(entry => new KeyValuePair<PartitionedKey<TPartition, TRow>, TValue>(

@@ -63,19 +63,21 @@
                 this IConcurrentVersionedKeyValueStore<PartitionedKey<TKey, TKey>, TVersion, TValue> partitionedStore)
             => partitionedStore.WithKey((TKey key) => new PartitionedKey<TKey, TKey>(key, key));
 
-        public static IPartitionedKeyValueStore<TPartition, TRow, TValue>
-            WithKey<TPartition, TOldPartition, TRow, TOldRow, TValue>(
-                this IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue> store,
+        public static IPartitionedKeyValueStore<TPartition, TRow, TValue, TContinuation>
+            WithKey<TPartition, TOldPartition, TRow, TOldRow, TValue, TContinuation>(
+                this IPartitionedKeyValueStore<TOldPartition, TOldRow, TValue, TContinuation> store,
                 Func<TPartition, TOldPartition> partitionSerializer,
                 Func<TRow, TOldRow> rowSerializer,
                 Func<TOldPartition, TPartition> partitionDeserializer,
-                Func<TOldRow, TRow> rowDeserializer) =>
-            new PartitionedKeySerializingStore<TPartition, TOldPartition, TRow, TOldRow, TValue>(
+                Func<TOldRow, TRow> rowDeserializer)
+            where TContinuation: class =>
+            new PartitionedKeySerializingStore<TPartition, TOldPartition, TRow, TOldRow, TValue, TContinuation>(
                 store, partitionSerializer, rowSerializer, partitionDeserializer, rowDeserializer);
-        public static IPartitionedKeyValueStore<TPartition, TRow, TValue>
-            WithValue<TPartition, TRow, TValue, TOldValue>(
-                this IPartitionedKeyValueStore<TPartition, TRow, TOldValue> store,
+        public static IPartitionedKeyValueStore<TPartition, TRow, TValue, TContinuation>
+            WithValue<TPartition, TRow, TValue, TOldValue, TContinuation>(
+                this IPartitionedKeyValueStore<TPartition, TRow, TOldValue, TContinuation> store,
                 Func<TOldValue, TValue> deserializer
-            ) => new PartitionedSerializingStore<TPartition,TRow,TValue,TOldValue>(store, deserializer);
+            ) where TContinuation : class => 
+            new PartitionedSerializingStore<TPartition,TRow,TValue,TOldValue,TContinuation>(store, deserializer);
     }
 }
