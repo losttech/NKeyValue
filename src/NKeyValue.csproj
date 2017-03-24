@@ -11,6 +11,10 @@
     <Product>LostTech.Storage</Product>
     <Description>Abstracts key-value stores</Description>
     <PackageTags>storage, key-value</PackageTags>
+    <PackageProjectUrl>https://github.com/losttech/NKeyValue/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/losttech/NKeyValue/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/losttech/NKeyValue.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="**\*.resx" />
