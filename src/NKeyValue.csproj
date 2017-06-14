@@ -4,8 +4,8 @@
     <RootNamespace>LostTech.Storage</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <VersionPrefix>0.2.1</VersionPrefix>
     <Authors>Victor Milovanov</Authors>
     <Company>Lost Tech LLC</Company>
     <Product>LostTech.Storage</Product>

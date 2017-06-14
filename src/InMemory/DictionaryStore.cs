@@ -1,8 +1,8 @@
 namespace LostTech.Storage.InMemory
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using LostTech.Storage.ForwardCompatibility;
 
     /// <summary>
     /// Implements in-memory store, backed by <see cref="Dictionary{TKey,TValue}"/>
@@ -19,7 +19,7 @@ namespace LostTech.Storage.InMemory
             if (this.store.TryGetValue(key, out var value))
                 return Task.FromResult(value);
 
-            return Task.FromException<TValue>(new KeyNotFoundException());
+            return TaskEx.FromException<TValue>(new KeyNotFoundException());
         }
 
         public Task<(bool, TValue)> TryGet(TKey key)
@@ -31,7 +31,7 @@ namespace LostTech.Storage.InMemory
         public Task Put(TKey key, TValue value)
         {
             this.store[key] = value;
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public Task<bool?> Delete(TKey key) => Task.FromResult((bool?)this.store.Remove(key));

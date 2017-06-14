@@ -4,6 +4,7 @@ namespace LostTech.Storage.InMemory
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using LostTech.Storage.ForwardCompatibility;
 
     /// <summary>
     /// Implements in-memory store, backed by <see cref="ConcurrentDictionary{TKey,TValue}"/>
@@ -17,7 +18,7 @@ namespace LostTech.Storage.InMemory
         public Task<TValue> Get(TKey key) => 
             this.store.TryGetValue(key, out VersionedEntry<object, TValue> value) 
                 ? Task.FromResult(value.Value) 
-                : Task.FromException<TValue>(new KeyNotFoundException());
+                : TaskEx.FromException<TValue>(new KeyNotFoundException());
 
         public Task<(bool, TValue)> TryGet(TKey key)
         {
@@ -36,7 +37,7 @@ namespace LostTech.Storage.InMemory
                 Value = value,
             };
             this.store.AddOrUpdate(key, entry, (_,__) => entry);
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public Task<(bool, object)> Put(TKey key, TValue value, object version)
