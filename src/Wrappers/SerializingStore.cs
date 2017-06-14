@@ -1,18 +1,16 @@
 namespace LostTech.Storage.Wrappers
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    class SerializingStore<TKey, TValue> : IKeyValueStore<TKey, TValue>
+    class SerializingStore<TKey, TValue, TOldValue> : IKeyValueStore<TKey, TValue>
     {
-        readonly IKeyValueStore<TKey, IDictionary<string, object>> store;
-        protected readonly Func<IDictionary<string, object>, TValue> deserializer;
+        readonly IKeyValueStore<TKey, TOldValue> store;
+        protected readonly Func<TOldValue, TValue> deserializer;
 
-        public SerializingStore(IKeyValueStore<TKey, IDictionary<string, object>> backingStore,
-            Func<IDictionary<string, object>, TValue> deserializer)
+        public SerializingStore(IKeyValueStore<TKey, TOldValue> store, Func<TOldValue, TValue> deserializer)
         {
-            this.store = backingStore ?? throw new ArgumentNullException(nameof(backingStore));
+            this.store = store ?? throw new ArgumentNullException(nameof(store));
             this.deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
         }
 
@@ -26,8 +24,8 @@ namespace LostTech.Storage.Wrappers
         {
             var (found, serialized) = await this.store.TryGet(key).ConfigureAwait(false);
             return found
-                ? (true,this.deserializer(serialized))
-                : (false,default(TValue));
+                ? (true, this.deserializer(serialized))
+                : (false, default(TValue));
         }
     }
 }

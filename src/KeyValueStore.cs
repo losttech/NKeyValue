@@ -32,6 +32,12 @@
             Action<TValue, IDictionary<string, object>> serializer)
             => new WriteableSerializingStore<TKey, TValue>(store, deserializer, serializer);
 
+        public static IWriteableKeyValueStore<TKey, TValue> WithValue<TKey, TValue, TOldValue>(
+            this IWriteableKeyValueStore<TKey, TOldValue> store,
+            Func<TOldValue, TValue> deserializer,
+            Func<TValue, TOldValue> serializer)
+            => new WriteableSerializingStore<TKey,TValue, TOldValue>(store, deserializer, serializer);
+
         /// <summary>
         /// Wraps <see cref="String"/>-keyed store to use <typeparamref name="TKey"/> for keys, using the provided key serializer.
         /// </summary>
