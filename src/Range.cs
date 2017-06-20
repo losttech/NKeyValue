@@ -21,5 +21,6 @@
     public static class Range
     {
         public static Range<T> SingleElement<T>(T value) => new Range<T>(value, value);
+        public static Range<T> Create<T>(T start, T end) => new Range<T>(start, end);
     }
 }
